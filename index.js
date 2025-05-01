@@ -1,5 +1,3 @@
-// Tahap 6: Tambah fitur dropdown calendar untuk cek jadwal dan hapus berdasarkan tanggal
-
 const express = require('express');
 const fs = require('fs-extra');
 const bodyParser = require('body-parser');
@@ -25,852 +23,24 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
+
 app.get('/', (req, res) => {
-  res.send(`
-  <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Engineering Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
-      defer
-    ></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Inter", sans-serif;
-      }
-
-      body {
-        font-family: 'Roboto', sans-serif;
-        background-color: #1c1f24;
-        color: #fff;
-        display: flex;
-      }
-
-      .sidebar {
-        width: 240px;
-        background-color: #1a1d22;
-        height: 100vh;
-        padding: 30px 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: width 0.3s ease;
-      }
-      .sidebar.collapsed {
-        width: 60px;
-      }
-      .toggle-btn {
-        color: #c4ff00;
-        font-size: 24px;
-        cursor: pointer;
-        margin-bottom: 20px;
-        display: inline-block;
-      }
-      .sidebar .user {
-        text-align: center;
-        margin-bottom: 40px;
-      }
-      .sidebar .user img {
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        transition: width 0.3s, height 0.3s;
-      }
-      .sidebar.collapsed .user img {
-        width: 40px;
-        height: 40px;
-      }
-      .sidebar .user h4 {
-        margin-top: 10px;
-        font-size: 16px;
-        color: #fff;
-      }
-      .sidebar.collapsed .user h4 {
-        display: none;
-      }
-      .sidebar nav a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #ccc;
-        text-decoration: none;
-        margin: 15px 0;
-        padding: 10px;
-        border-radius: 8px;
-        transition: background 0.2s;
-      }
-      .sidebar nav a:hover,
-      .sidebar nav a.active {
-        background-color: #31343a;
-        color: #c4ff00;
-      }
-      .sidebar nav a i {
-        font-size: 16px;
-        min-width: 20px;
-        text-align: center;
-      }
-      .sidebar nav a span {
-        transition: opacity 0.3s;
-      }
-      .sidebar.collapsed nav a span {
-        display: none;
-      }
-
-      .main {
-        flex: 1;
-        padding: 30px;
-        background-color: #20242a;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 20px;
-        transition: margin-left 0.3s;
-      }
-
-      .card {
-        background-color: #2a2f36;
-        border-radius: 16px;
-        padding: 20px;
-        position: relative;
-        overflow: hidden;
-        min-height: 120px;
-        max-height: 200px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        transition: all 0.2s ease;
-        cursor: pointer;
-      }
-
-      .card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 6px 12px rgba(196, 255, 0, 0.3);
-      }
-
-      .card:active {
-        transform: scale(0.97);
-        box-shadow: 0 3px 6px rgba(196, 255, 0, 0.2);
-      }
-
-      .card-icon {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        font-size: 24px;
-        color: #c4ff00;
-      }
-
-      .card-title {
-        font-weight: 600;
-        font-size: 16px;
-        color: #fff;
-      }
-
-      .card-subtitle {
-        font-size: 12px;
-        color: #ccc;
-      }
-
-      @media (max-width: 768px) {
-        .sidebar {
-          width: 240px;
-          background-color: #1a1d22;
-          height: 100vh;
-          padding: 30px 12px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          transition: width 0.3s ease;
-        }
-        /* .sidebar.auto-collapsed {
-          width: 60px;
-        } */
-        .sidebar .user h4,
-        .sidebar nav a span {
-          transition: opacity 0.3s;
-          /* display: none; */
-        }
-        .sidebar nav a {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: #ccc;
-          text-decoration: none;
-          margin: 15px 0;
-          padding: 10px;
-          border-radius: 8px;
-          transition: background 0.2s;
-        }
-        .sidebar nav a:hover,
-        .sidebar nav a.active {
-          background-color: #31343a;
-          color: #c4ff00;
-        }
-        .sidebar nav a i {
-          font-size: 16px;
-          min-width: 20px;
-          text-align: center;
-        }
-
-        .sidebar.collapsed nav a span {
-          display: none;
-        }
-        .main {
-          flex-direction: column;
-        }
-        .calendar-box {
-          width: 100%;
-          background-color: #2a2f36;
-          border-radius: 12px;
-          padding: 20px;
-          /* width: 420px; */
-          height: 210px;
-        }
-        .calendar {
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
-          gap: 2px;
-          text-align: center;
-        }
-        .calendar .day {
-          padding: 3px;
-          font-size: 18px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="sidebar collapsed" id="sidebar">
-      <div>
-        <div class="toggle-btn" onclick="toggleSidebar()">☰</div>
-        <div class="user">
-          <img
-            src="https://scontent.fcgk29-1.fna.fbcdn.net/v/t39.30808-6/240149924_1266153830469898_4312465236162673900_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEPi4lbNMQ-IxTwzC-eP1oceag_PbyWHCB5qD89vJYcIGoJPPUbL5bIj0yaWebCjAg&_nc_ohc=ncaUPkqnRDwQ7kNvwFs7ZHp&_nc_oc=Adn_cJ05hJqRO3hD48s3OBANurDQ_OkhwHiFdcJDDr2j4NizAzwaaqBpTgA_La249K8&_nc_zt=23&_nc_ht=scontent.fcgk29-1.fna&_nc_gid=3EnV0HibA8BnXzSQOM4BTg&oh=00_AfEfcJxngGqfYda-0xnTrh0oDEqf6pLuYz2XaA7GRICNhw&oe=6816A56E"
-            alt="User"
-          />
-          <h4>Engineering Schedule</h4>
-        </div>
-        <nav>
-          <a class="active" href="#"
-            ><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a
-          >
-          <a href="/scheduleDate"
-            ><i class="fas fa-calendar-alt"></i><span>Calendar</span></a
-          >
-          <a href="#"><i class="fas fa-book"></i><span>Log</span></a>
-          <a href="/preview"
-            ><i class="fas fa-clock"></i><span>Schedule</span></a
-          >
-        </nav>
-      </div>
-      <div>
-        <nav>
-          <a href="#"><i class="fas fa-cog"></i><span>Settings</span></a>
-          <a href="#"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
-        </nav>
-      </div>
-    </div>
-
-    <div class="main">
-      <div class="card" onclick="location.href='/uploadExcel'">
-        <div class="card-icon"><i class="fas fa-file-excel"></i></div>
-        <div class="card-title">Upload Excel</div>
-        <div class="card-subtitle">Unggah file jadwal (.xlsx)</div>
-      </div>
-
-      <div class="card" onclick="location.href='/uploadSchedule'">
-        <div class="card-icon"><i class="fas fa-calendar-plus"></i></div>
-        <div class="card-title">Input Jadwal</div>
-        <div class="card-subtitle">Tambahkan entri jadwal</div>
-      </div>
-
-      <div class="card" onclick="location.href='/preview'">
-        <div class="card-icon"><i class="fas fa-list"></i></div>
-        <div class="card-title">Lihat Jadwal</div>
-        <div class="card-subtitle">Tampilkan semua jadwal</div>
-      </div>
-
-      <div class="card" onclick="location.href='/today'">
-        <div class="card-icon"><i class="fas fa-calendar-day"></i></div>
-        <div class="card-title">Hari Ini</div>
-        <div class="card-subtitle">Lihat jadwal hari ini</div>
-      </div>
-
-      <div class="card" onclick="location.href='/testSendSchedule'">
-        <div class="card-icon"><i class="fas fa-paper-plane"></i></div>
-        <div class="card-title">Test Kirim</div>
-        <div class="card-subtitle">Tes kirim WhatsApp</div>
-      </div>
-
-      <div class="card" onclick="location.href='/scheduleDate'">
-        <div class="card-icon"><i class="fas fa-search"></i></div>
-        <div class="card-title">Cek Tanggal</div>
-        <div class="card-subtitle">Cek jadwal per tanggal</div>
-      </div>
-
-      <div class="card" onclick="location.href='/scheduleDeleteByDate'">
-        <div class="card-icon"><i class="fas fa-trash-alt"></i></div>
-        <div class="card-title">Hapus Tanggal</div>
-        <div class="card-subtitle">Hapus berdasarkan tanggal</div>
-      </div>
-
-      <div class="card" onclick="location.href='/deleteAll'">
-        <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
-        <div class="card-title">Hapus Semua</div>
-        <div class="card-subtitle">Bersihkan semua jadwal</div>
-      </div>
-
-      <div class="card" onclick="location.href='/messageSend'">
-        <div class="card-icon"><i class="fas fa-comment-dots"></i></div>
-        <div class="card-title">Kirim Pesan</div>
-        <div class="card-subtitle">Kirim pesan custom</div>
-      </div>
-    </div>
-
-    <script>
-      function toggleSidebar() {
-        const sidebar = document.getElementById("sidebar");
-        sidebar.classList.toggle("collapsed");
-      }
-
-      window.addEventListener("DOMContentLoaded", () => {
-        const sidebar = document.getElementById("sidebar");
-
-        // Jika lebar layar > 500, buka sidebar
-        // if (window.innerWidth > 700) {
-        //   sidebar.classList.remove("collapsed");
-        // }
-
-        // Saat ukuran layar berubah
-        window.addEventListener("resize", () => {
-          if (window.innerWidth > 1080) {
-            sidebar.classList.remove("collapsed");
-          } else {
-            sidebar.classList.add("collapsed");
-          }
-        });
-      });
-    </script>
-  </body>
-</html>
-  `);
+  // res.send(``);
+  res.render('index', {});
 });
 
 
 app.get('/uploadSchedule', (req, res) => {
-  res.send(`
-  <html>
-  <head>
-    <title>Upload Schedule</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      body { font-family: Arial; margin: 20px; padding: 0; background: #f0f0f0; }
-      .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-      h3 { margin-top: 0; }
-      textarea, input[type=text], input[type=submit], button, input[type=date] { width: 100%; padding: 10px; margin: 10px 0; }
-      .form-group { margin-bottom: 20px; }
-      .btn { background: #007bff; color: white; border: none; border-radius: 5px; }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <form method='POST' action='/submit'>
-        <h3>Input Jadwal</h3>
-        <div class="form-group">
-          <textarea name='bulk' rows='10'></textarea>
-          <input class="btn" type='submit' value='Simpan Jadwal'>
-        </div>
-      </form>
-    </div>
-  </body>
-  </html>
-  `);
+  // res.sendFile(path.join(__dirname, 'public', 'uploadSchedule.html'));
+  res.render('uploadSchedule', {});
 });
 
 app.get('/uploadExcel', (req, res) => {
-  // res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  res.send(`
-    <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Engineering Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
-      defer
-    ></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Plus-Jakarta-Sans", sans-serif;
-      }
-      body {
-        background-color: #1c1f24;
-        color: #fff;
-        display: flex;
-      }
-      .sidebar {
-        width: 240px;
-        background-color: #1a1d22;
-        height: 100vh;
-        padding: 30px 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: width 0.3s ease;
-      }
-      .sidebar.collapsed {
-        width: 60px;
-      }
-      .toggle-btn {
-        color: #c4ff00;
-        font-size: 24px;
-        cursor: pointer;
-        margin-bottom: 20px;
-        display: inline-block;
-      }
-      .sidebar .user {
-        text-align: center;
-        margin-bottom: 40px;
-      }
-      .sidebar .user img {
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        transition: width 0.3s, height 0.3s;
-      }
-      .sidebar.collapsed .user img {
-        width: 40px;
-        height: 40px;
-      }
-      .sidebar .user h4 {
-        margin-top: 10px;
-        font-size: 16px;
-        color: #fff;
-      }
-      .sidebar.collapsed .user h4 {
-        display: none;
-      }
-      .sidebar nav a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #ccc;
-        text-decoration: none;
-        margin: 15px 0;
-        padding: 10px;
-        border-radius: 8px;
-        transition: background 0.2s;
-      }
-      .sidebar nav a:hover,
-      .sidebar nav a.active {
-        background-color: #31343a;
-        color: #c4ff00;
-      }
-      .sidebar nav a i {
-        font-size: 16px;
-        min-width: 20px;
-        text-align: center;
-      }
-      .sidebar nav a span {
-        transition: opacity 0.3s;
-      }
-      .sidebar.collapsed nav a span {
-        display: none;
-      }
-      .main {
-        flex: 1;
-        padding: 10px;
-        background-color: #20242a;
-        display: flex;
-        gap: 10px;
-        overflow-y: auto;
-        width: 100%;
-      }
-
-      .card {
-        background-color: #2a2f36;
-        border-radius: 12px;
-        padding: 20px;
-        flex: 1;
-      }
-
-      .calendar-box {
-        background-color: #2a2f36;
-        border-radius: 12px;
-        padding: 20px;
-        width: 420px;
-        height: 370px;
-      }
-      .calendar-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-      .calendar-controls button {
-        background-color: #c4ff00;
-        color: #1c1f24;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-      .schedule-card {
-        background-color: #2a2f36;
-        border-radius: 12px;
-        padding: 20px;
-        flex: 1;
-      }
-      .schedule-card h3 {
-        color: #c4ff00;
-        margin-bottom: 10px;
-      }
-      #scheduleContent div {
-        margin-bottom: 10px;
-        color: #fff;
-      }
-      #scheduleContent .label {
-        font-weight: bold;
-        margin-right: 6px;
-      }
-      #scheduleContent .label.morning {
-        color: #90ee90;
-      }
-      #scheduleContent .label.middle {
-        color: #ffcc70;
-      }
-      #scheduleContent .label.afternoon {
-        color: #ffd700;
-      }
-      #scheduleContent .label.night {
-        color: #66b2ff;
-      }
-      .calendar {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
-        text-align: center;
-      }
-      .calendar .day {
-        padding: 10px;
-        background: #3a3f47;
-        border-radius: 8px;
-        cursor: pointer;
-        padding: 10px;
-        font-size: 18px;
-      }
-      .calendar .day:hover {
-        background-color: #c4ff00;
-        color: #1c1f24;
-      }
-      .calendar .selected {
-        background-color: #c4ff00;
-        color: #1c1f24;
-      }
-
-      @media (max-width: 700px) {
-        .sidebar {
-          width: 240px;
-          background-color: #1a1d22;
-          height: 100vh;
-          padding: 30px 12px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          transition: width 0.3s ease;
-        }
-        /* .sidebar.auto-collapsed {
-          width: 60px;
-        } */
-        .sidebar .user h4,
-        .sidebar nav a span {
-          transition: opacity 0.3s;
-          /* display: none; */
-        }
-        .sidebar nav a {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: #ccc;
-          text-decoration: none;
-          margin: 15px 0;
-          padding: 10px;
-          border-radius: 8px;
-          transition: background 0.2s;
-        }
-        .sidebar nav a:hover,
-        .sidebar nav a.active {
-          background-color: #31343a;
-          color: #c4ff00;
-        }
-        .sidebar nav a i {
-          font-size: 16px;
-          min-width: 20px;
-          text-align: center;
-        }
-
-        .sidebar.collapsed nav a span {
-          display: none;
-        }
-        .main {
-          flex-direction: column;
-        }
-        .calendar-box {
-          width: 100%;
-          background-color: #2a2f36;
-          border-radius: 12px;
-          padding: 20px;
-          /* width: 420px; */
-          height: 210px;
-        }
-        .calendar {
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
-          gap: 2px;
-          text-align: center;
-        }
-        .calendar .day {
-          padding: 3px;
-          font-size: 18px;
-        }
-        .schedule-card {
-          width: 100%;
-          /* height: 300px; */
-          margin-bottom: 10px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="sidebar collapsed" id="sidebar">
-      <div>
-        <div class="toggle-btn" onclick="toggleSidebar()">☰</div>
-        <div class="user">
-          <img
-            src="https://scontent.fcgk29-1.fna.fbcdn.net/v/t39.30808-6/240149924_1266153830469898_4312465236162673900_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEPi4lbNMQ-IxTwzC-eP1oceag_PbyWHCB5qD89vJYcIGoJPPUbL5bIj0yaWebCjAg&_nc_ohc=ncaUPkqnRDwQ7kNvwFs7ZHp&_nc_oc=Adn_cJ05hJqRO3hD48s3OBANurDQ_OkhwHiFdcJDDr2j4NizAzwaaqBpTgA_La249K8&_nc_zt=23&_nc_ht=scontent.fcgk29-1.fna&_nc_gid=3EnV0HibA8BnXzSQOM4BTg&oh=00_AfEfcJxngGqfYda-0xnTrh0oDEqf6pLuYz2XaA7GRICNhw&oe=6816A56E"
-            alt="User"
-          />
-          <h4>Engineering Schedule</h4>
-        </div>
-        <nav>
-          <a href="/"
-            ><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a
-          >
-          <a class="active" href="#"
-            ><i class="fas fa-calendar-alt"></i><span>Calendar</span></a
-          >
-          <a href="#"><i class="fas fa-book"></i><span>Log</span></a>
-          <a href="/preview"><i class="fas fa-clock"></i><span>Schedule</span></a>
-        </nav>
-      </div>
-      <div>
-        <nav>
-          <a href="#"><i class="fas fa-cog"></i><span>Settings</span></a>
-          <a href="#"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
-        </nav>
-      </div>
-    </div>
-
-    <div class="main">
-      <div class="card">
-        <h3 class="mb-4">Upload Jadwal Excel</h3>
-        <form
-          action="/upload"
-          method="post"
-          enctype="multipart/form-data"
-          class="card p-4 shadow-sm"
-        >
-          <div>
-            <input
-              type="file"
-              name="excel"
-              accept=".xlsx,.xls"
-              class="form-control"
-              required
-            />
-          </div>
-          <button type="submit">Upload dan Extract</button>
-        </form>
-      </div>
-    </div>
-
-    <script>
-      let currentMonth = new Date().getMonth();
-      let currentYear = new Date().getFullYear();
-
-      // function toggleSidebar() {
-      //   document.getElementById("sidebar").classList.toggle("collapsed");
-      // }
-
-      function changeMonth(delta) {
-        currentMonth += delta;
-        if (currentMonth > 11) {
-          currentMonth = 0;
-          currentYear++;
-        } else if (currentMonth < 0) {
-          currentMonth = 11;
-          currentYear--;
-        }
-        generateCalendar("calendarContainer", currentYear, currentMonth);
-      }
-
-      function generateCalendar(containerId, year, month) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = "";
-
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const firstDay = new Date(year, month, 1).getDay();
-
-        const monthNames = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "Agustus",
-          "September",
-          "Oktober",
-          "November",
-          "Desember",
-        ];
-        document.getElementById("monthLabel").textContent = monthNames[month] + " " + year;
-
-        for (let i = 0; i < firstDay; i++) {
-          const empty = document.createElement("div");
-          container.appendChild(empty);
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-          const dayElement = document.createElement("div");
-          dayElement.className = "day";
-          dayElement.textContent = day;
-
-          dayElement.onclick = () => {
-            const selected = container.querySelector(".selected");
-            if (selected) selected.classList.remove("selected");
-            dayElement.classList.add("selected");
-
-            const dateStr = year + "-" + String(month + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
-
-            const dateObj = new Date(dateStr);
-
-// Format ke "D MMMM YYYY" dalam bahasa Indonesia
-const formattedDateStr = dateObj.toLocaleDateString("en-EN", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
+  // res.sendFile(path.join(__dirname, 'public', 'uploadExcel.html'));
+  res.render('uploadExcel', {});
 });
-
-document.getElementById("selectedDateDisplay").textContent =
-  formattedDateStr;
-
-fetch("/byDay?date=" + dateStr)
-  .then((res) =>
-    res.ok ? res.text() : Promise.reject("No schedule")
-  )
-  .then((html) => {
-    document.getElementById("scheduleContent").innerHTML = html;
-  })
-  .catch(() => {
-    document.getElementById("scheduleContent").innerHTML =
-      "Tidak ada jadwal untuk tanggal ini.";
-  });
-          };
-
-container.appendChild(dayElement);
-        }
-      }
-
-
-
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  sidebar.classList.toggle("collapsed");
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  const sidebar = document.getElementById("sidebar");
-
-  // Jika lebar layar > 500, buka sidebar
-  // if (window.innerWidth > 700) {
-  //   sidebar.classList.remove("collapsed");
-  // }
-
-  // Saat ukuran layar berubah
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 1080) {
-      sidebar.classList.remove("collapsed");
-    } else {
-      sidebar.classList.add("collapsed");
-    }
-  });
-
-  generateCalendar("calendarContainer", currentYear, currentMonth);
-});
-    </script >
-  </body >
-</html >
-      `);
-});
-
-// app.get('/uploadExcel', (req, res) => {
-//   // res.sendFile(path.join(__dirname, 'public', 'index.html'));
-//   res.send(`
-//       <html lang="en">
-// <head>
-//   <meta charset="UTF-8" />
-//   <title>Upload Excel</title>
-//   <link
-//     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-//     rel="stylesheet"
-//   />
-// </head>
-// <body class="bg-light p-4">
-//   <div class="container">
-//     <h1 class="mb-4">Upload Jadwal Excel</h1>
-//     <form
-//       action="/upload"
-//       method="post"
-//       enctype="multipart/form-data"
-//       class="card p-4 shadow-sm"
-//     >
-//       <div class="mb-3">
-//         <input
-//           type="file"
-//           name="excel"
-//           accept=".xlsx,.xls"
-//           class="form-control"
-//           required
-//         />
-//       </div>
-//       <button type="submit" class="btn btn-success">
-//         Upload dan Extract
-//       </button>
-//     </form>
-//   </div>
-// </body>
-// </html>`);
-// });
 
 function excelDateToJSDate(serial) {
   const utcDays = Math.floor(serial - 25569);
@@ -1109,6 +279,11 @@ app.get('/preview', async (req, res) => {
         transition: all 0.2s ease;
         cursor: pointer;
       }
+      
+      .card h3 {
+        color: #c4ff00;
+        margin-bottom: 10px;
+      }
 
       .card:hover {
         transform: translateY(-4px);
@@ -1137,6 +312,49 @@ app.get('/preview', async (req, res) => {
       .card-subtitle {
         font-size: 12px;
         color: #ccc;
+      }
+
+      .schedule-card {
+        background-color: #2a2f36;
+        flex: 1;
+        background-color: #2a2f36;
+        border-radius: 16px;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+
+      .schedule-card h3 {
+        color: #c4ff00;
+        margin-bottom: 10px;
+      }
+
+      #scheduleContent div {
+        margin-bottom: 10px;
+        color: #fff;
+      }
+      #scheduleContent .label {
+        font-weight: bold;
+        margin-right: 6px;
+      }
+      #scheduleContent .label.morning {
+        color: #90ee90;
+      }
+      #scheduleContent .label.middle {
+        color: orange;
+      }
+      #scheduleContent .label.afternoon {
+        color: #ffd700;
+      }
+      #scheduleContent .label.night {
+        color: #66b2ff;
       }
 
       @media (max-width: 768px) {
@@ -1239,25 +457,25 @@ app.get('/preview', async (req, res) => {
 
       let content = lines.slice(1).map(line => {
         if (line.startsWith('Morning:')) {
-          return `<span class="shift-label morning">Morning:</span>${line.replace('Morning:', '')}`;
+          return `<div><span class="label morning">Morning:</span>${line.replace('Morning:', '').trim()}</div>`;
         } else if (line.startsWith('Middle:')) {
-          return `<span class="shift-label middle">Middle:</span>${line.replace('Middle:', '')}`;
+          return `<div><span class="label middle">Middle:</span>${line.replace('Middle:', '').trim()}</div>`;
         } else if (line.startsWith('Afternoon:')) {
-          return `<span class="shift-label afternoon">Afternoon:</span>${line.replace('Afternoon:', '')}`;
+          return `<div><span class="label afternoon">Afternoon:</span>${line.replace('Afternoon:', '').trim()}</div>`;
         } else if (line.startsWith('Night:')) {
-          return `<span class="shift-label night">Night:</span>${line.replace('Night:', '')}`;
+          return `<div><span class="label night">Night:</span>${line.replace('Night:', '').trim()}</div>`;
         } else {
           return line;
         }
-      }).join('<br>');
+      }).join('');
 
       html += `
         <div class="col">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">${date}</h5>
-                    <div class="card-text">${content}</div>
-                </div>
+            <div class="card">
+                
+                    <h3>${date}</h3>
+                    <div id="scheduleContent">${content}</div>
+                
             </div>
         </div>
       `;
@@ -1300,505 +518,13 @@ app.get('/preview', async (req, res) => {
   }
 });
 
-app.get('/preview', async (req, res) => {
-  try {
-    const data = await fs.readFile(JADWAL_FILE, 'utf-8');
-    const blocks = data.split(/\n(?=\d{1,2} [A-Za-z]+ \d{4})/g);
-    let html = `
-      <html>
-      <head>
-          <title>Preview Jadwal</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-          <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-          <style>
-              body {
-                  font-family: 'Roboto', sans-serif;
-              }
-              .card-title {
-                  font-size: 20px;
-              }
-              .shift-label {
-                  font-weight: bold;
-              }
-              .morning { color: green; }
-              .middle { color: orange; }
-              .afternoon { color: #ffc107; }
-              .night { color: #007bff; }
-          </style>
-      </head>
-      <body class="bg-light p-4">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-              <h2>Semua Jadwal</h2>
-              <a href="/download" class="btn btn-primary">Download jadwal.txt</a>
-          </div>
-          <div class="row row-cols-1 row-cols-md-3 g-4">
-    `;
-
-    for (const block of blocks) {
-      const lines = block.trim().split('\n');
-      if (!lines[0]) continue;
-      const date = lines[0];
-
-      let content = lines.slice(1).map(line => {
-        if (line.startsWith('Morning:')) {
-          return `<span class="shift-label morning">Morning:</span>${line.replace('Morning:', '')}`;
-        } else if (line.startsWith('Middle:')) {
-          return `<span class="shift-label middle">Middle:</span>${line.replace('Middle:', '')}`;
-        } else if (line.startsWith('Afternoon:')) {
-          return `<span class="shift-label afternoon">Afternoon:</span>${line.replace('Afternoon:', '')}`;
-        } else if (line.startsWith('Night:')) {
-          return `<span class="shift-label night">Night:</span>${line.replace('Night:', '')}`;
-        } else {
-          return line;
-        }
-      }).join('<br>');
-
-      html += `
-        <div class="col">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">${date}</h5>
-                    <div class="card-text">${content}</div>
-                </div>
-            </div>
-        </div>
-      `;
-    }
-
-    html += `</div></body></html>`;
-    res.send(html);
-
-  } catch (err) {
-    res.status(500).send('Gagal membaca jadwal.');
-  }
-});
-
 app.get('/download', (req, res) => {
   res.download(JADWAL_FILE, 'jadwal.txt');
 });
 
 app.get('/scheduleDate', (req, res) => {
-  res.send(`
-  <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Engineering Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
-      defer
-    ></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Plus-Jakarta-Sans", sans-serif;
-      }
-      body {
-        background-color: #1c1f24;
-        color: #fff;
-        display: flex;
-      }
-      .sidebar {
-        width: 240px;
-        background-color: #1a1d22;
-        height: 100vh;
-        padding: 30px 12px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: width 0.3s ease;
-      }
-      .sidebar.collapsed {
-        width: 60px;
-      }
-      .toggle-btn {
-        color: #c4ff00;
-        font-size: 24px;
-        cursor: pointer;
-        margin-bottom: 20px;
-        display: inline-block;
-      }
-      .sidebar .user {
-        text-align: center;
-        margin-bottom: 40px;
-      }
-      .sidebar .user img {
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        transition: width 0.3s, height 0.3s;
-      }
-      .sidebar.collapsed .user img {
-        width: 40px;
-        height: 40px;
-      }
-      .sidebar .user h4 {
-        margin-top: 10px;
-        font-size: 16px;
-        color: #fff;
-      }
-      .sidebar.collapsed .user h4 {
-        display: none;
-      }
-      .sidebar nav a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #ccc;
-        text-decoration: none;
-        margin: 15px 0;
-        padding: 10px;
-        border-radius: 8px;
-        transition: background 0.2s;
-      }
-      .sidebar nav a:hover,
-      .sidebar nav a.active {
-        background-color: #31343a;
-        color: #c4ff00;
-      }
-      .sidebar nav a i {
-        font-size: 16px;
-        min-width: 20px;
-        text-align: center;
-      }
-      .sidebar nav a span {
-        transition: opacity 0.3s;
-      }
-      .sidebar.collapsed nav a span {
-        display: none;
-      }
-      .main {
-        flex: 1;
-        padding: 10px;
-        background-color: #20242a;
-        display: flex;
-        gap: 10px;
-        overflow-y: auto;
-        width: 100%;
-      }
-      .calendar-box {
-        background-color: #2a2f36;
-        border-radius: 12px;
-        padding: 20px;
-        width: 420px;
-        height: 370px;
-      }
-      .calendar-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-      .calendar-controls button {
-        background-color: #c4ff00;
-        color: #1c1f24;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-      .schedule-card {
-        background-color: #2a2f36;
-        border-radius: 12px;
-        padding: 20px;
-        flex: 1;
-      }
-      .schedule-card h3 {
-        color: #c4ff00;
-        margin-bottom: 10px;
-      }
-      #scheduleContent div {
-        margin-bottom: 10px;
-        color: #fff;
-      }
-      #scheduleContent .label {
-        font-weight: bold;
-        margin-right: 6px;
-      }
-      #scheduleContent .label.morning {
-        color: #90ee90;
-      }
-      #scheduleContent .label.middle {
-        color: #ffcc70;
-      }
-      #scheduleContent .label.afternoon {
-        color: #ffd700;
-      }
-      #scheduleContent .label.night {
-        color: #66b2ff;
-      }
-      .calendar {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
-        text-align: center;
-      }
-      .calendar .day {
-        padding: 10px;
-        background: #3a3f47;
-        border-radius: 8px;
-        cursor: pointer;
-        padding: 10px;
-        font-size: 18px;
-      }
-      .calendar .day:hover {
-        background-color: #c4ff00;
-        color: #1c1f24;
-      }
-      .calendar .selected {
-        background-color: #c4ff00;
-        color: #1c1f24;
-      }
-
-      @media (max-width: 700px) {
-        .sidebar {
-          width: 240px;
-          background-color: #1a1d22;
-          height: 100vh;
-          padding: 30px 12px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          transition: width 0.3s ease;
-        }
-        /* .sidebar.auto-collapsed {
-          width: 60px;
-        } */
-        .sidebar .user h4,
-        .sidebar nav a span {
-          transition: opacity 0.3s;
-          /* display: none; */
-        }
-        .sidebar nav a {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: #ccc;
-          text-decoration: none;
-          margin: 15px 0;
-          padding: 10px;
-          border-radius: 8px;
-          transition: background 0.2s;
-        }
-        .sidebar nav a:hover,
-        .sidebar nav a.active {
-          background-color: #31343a;
-          color: #c4ff00;
-        }
-        .sidebar nav a i {
-          font-size: 16px;
-          min-width: 20px;
-          text-align: center;
-        }
-
-        .sidebar.collapsed nav a span {
-          display: none;
-        }
-        .main {
-          flex-direction: column;
-        }
-        .calendar-box {
-          width: 100%;
-          background-color: #2a2f36;
-          border-radius: 12px;
-          padding: 20px;
-          /* width: 420px; */
-          height: 210px;
-        }
-        .calendar {
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
-          gap: 2px;
-          text-align: center;
-        }
-        .calendar .day {
-          padding: 3px;
-          font-size: 18px;
-        }
-        .schedule-card {
-          width: 100%;
-          /* height: 300px; */
-          margin-bottom: 10px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="sidebar collapsed" id="sidebar">
-      <div>
-        <div class="toggle-btn" onclick="toggleSidebar()">☰</div>
-        <div class="user">
-          <img
-            src="https://scontent.fcgk29-1.fna.fbcdn.net/v/t39.30808-6/240149924_1266153830469898_4312465236162673900_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEPi4lbNMQ-IxTwzC-eP1oceag_PbyWHCB5qD89vJYcIGoJPPUbL5bIj0yaWebCjAg&_nc_ohc=ncaUPkqnRDwQ7kNvwFs7ZHp&_nc_oc=Adn_cJ05hJqRO3hD48s3OBANurDQ_OkhwHiFdcJDDr2j4NizAzwaaqBpTgA_La249K8&_nc_zt=23&_nc_ht=scontent.fcgk29-1.fna&_nc_gid=3EnV0HibA8BnXzSQOM4BTg&oh=00_AfEfcJxngGqfYda-0xnTrh0oDEqf6pLuYz2XaA7GRICNhw&oe=6816A56E"
-            alt="User"
-          />
-          <h4>Engineering Schedule</h4>
-        </div>
-        <nav>
-          <a href="/"
-            ><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a
-          >
-          <a class="active" href="#"
-            ><i class="fas fa-calendar-alt"></i><span>Calendar</span></a
-          >
-          <a href="#"><i class="fas fa-book"></i><span>Log</span></a>
-          <a href="/preview"><i class="fas fa-clock"></i><span>Schedule</span></a>
-        </nav>
-      </div>
-      <div>
-        <nav>
-          <a href="#"><i class="fas fa-cog"></i><span>Settings</span></a>
-          <a href="#"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
-        </nav>
-      </div>
-    </div>
-
-    <div class="main">
-      <div class="schedule-card">
-        <h3>Jadwal Tanggal <span id="selectedDateDisplay">-</span></h3>
-        <div id="scheduleContent">
-          Klik tanggal di kalender untuk melihat jadwal.
-        </div>
-      </div>
-
-      <div class="calendar-box">
-        <div class="calendar-controls">
-          <button onclick="changeMonth(-1)">&lt;</button>
-          <h3 id="monthLabel">Pilih Tanggal</h3>
-          <button onclick="changeMonth(1)">&gt;</button>
-        </div>
-        <div class="calendar" id="calendarContainer"></div>
-      </div>
-    </div>
-
-    <script>
-      let currentMonth = new Date().getMonth();
-      let currentYear = new Date().getFullYear();
-
-      // function toggleSidebar() {
-      //   document.getElementById("sidebar").classList.toggle("collapsed");
-      // }
-
-      function changeMonth(delta) {
-        currentMonth += delta;
-        if (currentMonth > 11) {
-          currentMonth = 0;
-          currentYear++;
-        } else if (currentMonth < 0) {
-          currentMonth = 11;
-          currentYear--;
-        }
-        generateCalendar("calendarContainer", currentYear, currentMonth);
-      }
-
-      function generateCalendar(containerId, year, month) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = "";
-
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const firstDay = new Date(year, month, 1).getDay();
-
-        const monthNames = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "Agustus",
-          "September",
-          "Oktober",
-          "November",
-          "Desember",
-        ];
-        document.getElementById("monthLabel").textContent = monthNames[month] + " " + year;
-
-        for (let i = 0; i < firstDay; i++) {
-          const empty = document.createElement("div");
-          container.appendChild(empty);
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-          const dayElement = document.createElement("div");
-          dayElement.className = "day";
-          dayElement.textContent = day;
-
-          dayElement.onclick = () => {
-            const selected = container.querySelector(".selected");
-            if (selected) selected.classList.remove("selected");
-            dayElement.classList.add("selected");
-
-            const dateStr = year + "-" + String(month + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
-
-            const dateObj = new Date(dateStr);
-
-// Format ke "D MMMM YYYY" dalam bahasa Indonesia
-const formattedDateStr = dateObj.toLocaleDateString("en-EN", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
-
-document.getElementById("selectedDateDisplay").textContent =
-  formattedDateStr;
-
-fetch("/byDay?date=" + dateStr)
-  .then((res) =>
-    res.ok ? res.text() : Promise.reject("No schedule")
-  )
-  .then((html) => {
-    document.getElementById("scheduleContent").innerHTML = html;
-  })
-  .catch(() => {
-    document.getElementById("scheduleContent").innerHTML =
-      "Tidak ada jadwal untuk tanggal ini.";
-  });
-          };
-
-container.appendChild(dayElement);
-        }
-      }
-
-
-
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  sidebar.classList.toggle("collapsed");
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  const sidebar = document.getElementById("sidebar");
-
-  // Jika lebar layar > 500, buka sidebar
-  // if (window.innerWidth > 700) {
-  //   sidebar.classList.remove("collapsed");
-  // }
-
-  // Saat ukuran layar berubah
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 1080) {
-      sidebar.classList.remove("collapsed");
-    } else {
-      sidebar.classList.add("collapsed");
-    }
-  });
-
-  generateCalendar("calendarContainer", currentYear, currentMonth);
-});
-    </script >
-  </body >
-</html >
-
-  `);
+  // res.send(``);
+  res.render('scheduleDate', {});
 });
 
 app.get('/scheduleByDate', (req, res) => {
@@ -1915,39 +641,6 @@ app.get('/byDate', async (req, res) => {
     res.status(500).send('Gagal membaca jadwal.');
   }
 });
-
-// app.get('/byDay', async (req, res) => {
-//   const input = req.query.date;
-//   if (!input) return res.status(400).send('Tanggal tidak valid.');
-
-//   const moment = require('moment');
-//   const targetDate = moment(input).format('D MMMM YYYY');
-
-//   try {
-//     const data = await fs.readFile(JADWAL_FILE, 'utf-8');
-//     const lines = data.split(/\r?\n/);
-//     let collect = false;
-//     let result = '';
-
-//     for (let line of lines) {
-//       if (line.trim() === targetDate) {
-//         collect = true;
-//         result += '\n'; // Tambahkan newline sebagai pengganti baris tanggal
-//         continue;
-//       }
-//       if (collect) {
-//         if (line.trim() === '') break;
-//         result += line + '\n';
-//       }
-//     }
-
-//     if (!result.trim()) return res.status(404).send('Tidak ada jadwal untuk tanggal tersebut.');
-
-//     res.type('text').send(result.trim());
-//   } catch (err) {
-//     res.status(500).send('Gagal membaca jadwal.');
-//   }
-// });
 
 app.get('/byDay', async (req, res) => {
   const date = req.query.date;
@@ -2215,9 +908,103 @@ app.get('/getDataHtml', async (req, res) => {
   }
 });
 
+// app.get('/today', async (req, res) => {
+//   const moment = require('moment');
+//   const fs = require('fs').promises;
+//   const today = moment().format('D MMMM YYYY');
+
+//   try {
+//     const data = await fs.readFile(JADWAL_FILE, 'utf-8');
+//     const lines = data.split(/\r?\n/);
+//     let collect = false;
+//     let result = '';
+
+//     for (let line of lines) {
+//       if (line.trim() === today) {
+//         collect = true;
+//         result += line + '\n';
+//         continue;
+//       }
+//       if (collect) {
+//         if (line.trim() === '') break;
+//         result += line + '\n';
+//       }
+//     }
+
+//     if (!result) return res.status(404).send('Tidak ada jadwal untuk hari ini.');
+
+//     const formatted = result
+//       .split('\n')
+//       .slice(1)
+//       .map(line => {
+//         if (line.startsWith('Morning:')) {
+//           return `<div><span class="label morning">Morning:</span> ${line.replace('Morning:', '').trim()}</div>`;
+//         } else if (line.startsWith('Middle:')) {
+//           return `<div><span class="label middle">Middle:</span> ${line.replace('Middle:', '').trim()}</div>`;
+//         } else if (line.startsWith('Afternoon:')) {
+//           return `<div><span class="label afternoon">Afternoon:</span> ${line.replace('Afternoon:', '').trim()}</div>`;
+//         } else if (line.startsWith('Night:')) {
+//           return `<div><span class="label night">Night:</span> ${line.replace('Night:', '').trim()}</div>`;
+//         } else {
+//           return `<div>${line}</div>`;
+//         }
+//       })
+//       .join('');
+
+//     const html = `
+//     <html>
+//       <head>
+//         <title>Jadwal Hari Ini (${today})</title>
+//         <meta name="viewport" content="width=device-width, initial-scale=1">
+//           <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+//             <style>
+//               body {
+//                 font - family: 'Roboto', sans-serif;
+//               background: #f0f0f0;
+//               margin: 0;
+//               padding: 20px;
+//           }
+//               .card {
+//                 background: #fff;
+//               padding: 15px;
+//               border-radius: 10px;
+//               box-shadow: 0 0 10px rgba(0,0,0,0.1);
+//               max-width: 600px;
+//               margin: auto;
+//           }
+//               .card h5 {
+//                 margin: 0 0 10px;
+//               color: rgb(0, 132, 255);
+//               font-size: 18px; /* Ukuran diperbesar */
+//           }
+//               .label {
+//                 font - weight: bold;
+//           }
+//               .label.morning {color: green; }
+//               .label.middle {color: orange; }
+//               .label.afternoon {color:#ffc107; }
+//               .label.night {color:rgb(0, 132, 255); }
+//             </style>
+
+//           </head>
+//           <body>
+//             <div class="card">
+//               <h5>${today}</h5>
+//               ${formatted}
+//             </div>
+//           </body>
+//         </html>
+//         `;
+
+//     res.send(html);
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Gagal membaca jadwal.');
+//   }
+// });
+
 app.get('/today', async (req, res) => {
-  const moment = require('moment');
-  const fs = require('fs').promises;
   const today = moment().format('D MMMM YYYY');
 
   try {
@@ -2258,52 +1045,7 @@ app.get('/today', async (req, res) => {
       })
       .join('');
 
-    const html = `
-    <html>
-      <head>
-        <title>Jadwal Hari Ini (${today})</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-          <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-            <style>
-              body {
-                font - family: 'Roboto', sans-serif;
-              background: #f0f0f0;
-              margin: 0;
-              padding: 20px;
-          }
-              .card {
-                background: #fff;
-              padding: 15px;
-              border-radius: 10px;
-              box-shadow: 0 0 10px rgba(0,0,0,0.1);
-              max-width: 600px;
-              margin: auto;
-          }
-              .card h5 {
-                margin: 0 0 10px;
-              color: rgb(0, 132, 255);
-              font-size: 18px; /* Ukuran diperbesar */
-          }
-              .label {
-                font - weight: bold;
-          }
-              .label.morning {color: green; }
-              .label.middle {color: orange; }
-              .label.afternoon {color:#ffc107; }
-              .label.night {color:rgb(0, 132, 255); }
-            </style>
-
-          </head>
-          <body>
-            <div class="card">
-              <h5>${today}</h5>
-              ${formatted}
-            </div>
-          </body>
-        </html>
-        `;
-
-    res.send(html);
+    res.render('today', { today, formatted });
 
   } catch (err) {
     console.error(err);
@@ -2409,32 +1151,33 @@ app.get('/testSendSchedule', async (req, res) => {
 });
 
 app.get('/messageSend', (req, res) => {
-  res.send(`
-  <html>
-  <head>
-    <title>Upload Schedule</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      body { font-family: Arial; margin: 20px; padding: 0; background: #f0f0f0; }
-      .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-      h3 { margin-top: 0; }
-      textarea, input[type=text], input[type=submit], button, input[type=date] { width: 100%; padding: 10px; margin: 10px 0; }
-      .form-group { margin-bottom: 20px; }
-      .btn { background: #007bff; color: white; border: none; border-radius: 5px; }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <form method='POST' action='/sendMessage'>
-        <h3>Test Kirim Pesan WhatsApp</h3>
-        <input type='text' name='number' placeholder='628xxxxxxx'>
-        <textarea name='message' placeholder='Isi pesan'></textarea>
-        <input class="btn" type='submit' value='Kirim Pesan'>
-      </form>
-    </div>
-  </body>
-  </html>
-  `);
+  res.render('messageSend', {});
+  // res.send(`
+  // <html>
+  // <head>
+  //   <title>Upload Schedule</title>
+  //   <meta name="viewport" content="width=device-width, initial-scale=1">
+  //   <style>
+  //     body { font-family: Arial; margin: 20px; padding: 0; background: #f0f0f0; }
+  //     .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  //     h3 { margin-top: 0; }
+  //     textarea, input[type=text], input[type=submit], button, input[type=date] { width: 100%; padding: 10px; margin: 10px 0; }
+  //     .form-group { margin-bottom: 20px; }
+  //     .btn { background: #007bff; color: white; border: none; border-radius: 5px; }
+  //   </style>
+  // </head>
+  // <body>
+  //   <div class="container">
+  //     <form method='POST' action='/sendMessage'>
+  //       <h3>Test Kirim Pesan WhatsApp</h3>
+  //       <input type='text' name='number' placeholder='628xxxxxxx'>
+  //       <textarea name='message' placeholder='Isi pesan'></textarea>
+  //       <input class="btn" type='submit' value='Kirim Pesan'>
+  //     </form>
+  //   </div>
+  // </body>
+  // </html>
+  // `);
 });
 
 app.post('/sendMessage', async (req, res) => {
