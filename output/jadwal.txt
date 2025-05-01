@@ -1,0 +1,181 @@
+21 April 2025
+Morning: Pak Saiful, Sheindy, Effendi, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Fathir (trainee), Satria (trainee)
+Afternoon: Agus.P
+Night: Andika
+
+22 April 2025
+Morning: Pak Saiful, Ais , Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Fathir (trainee), Satria (trainee)
+Afternoon: Agus.P
+Night: Andika
+
+23 April 2025
+Morning: Pak Saiful, Ais , Effendi, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Afternoon: Rizal 
+Night: Agus.P
+
+24 April 2025
+Morning: Pak Saiful, Sheindy, Andika, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Ais 
+Afternoon: Rizal 
+Night: Agus.P
+
+25 April 2025
+Morning: Pak Saiful, Sheindy, Effendi, Fatur (casual), fillern (casual), Fathir (trainee), Satria (trainee)
+Afternoon: Ais 
+Night: Rizal 
+
+26 April 2025
+Morning: Sheindy, Effendi, Fathir (trainee), Satria (trainee)
+Middle: Andika
+Afternoon: Ais 
+Night: Rizal 
+
+27 April 2025
+Morning: Sheindy, Effendi, Jefri (trainee), Rama (trainee)
+Middle: Andika, Fathir (trainee), Satria (trainee)
+Afternoon: Agus.P
+Night: Rizal 
+
+28 April 2025
+Morning: Pak Saiful, Sheindy, Effendi, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Fathir (trainee), Satria (trainee)
+Afternoon: Andika
+Night: Agus.P
+
+29 April 2025
+Morning: Pak Saiful, Ais , Effendi, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Fathir (trainee), Satria (trainee)
+Afternoon: Andika
+Night: Agus.P
+
+30 April 2025
+Morning: Pak Saiful, Ais , Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Rizal 
+Afternoon: Andika
+Night: Agus.P
+
+1 May 2025
+Morning: Pak Saiful, Sheindy, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Rizal 
+Afternoon: Ais 
+Night: Agus.P
+
+2 May 2025
+Morning: Pak Saiful, Sheindy, Effendi, Fatur (casual), fillern (casual), Fathir (trainee), Satria (trainee)
+Afternoon: Ais 
+Night: Rizal 
+
+3 May 2025
+Morning: Sheindy, Effendi, Fathir (trainee), Satria (trainee)
+Middle: Andika
+Afternoon: Ais 
+Night: Rizal 
+
+4 May 2025
+Morning: Sheindy, Effendi, Fathir (trainee), Satria (trainee)
+Middle: Andika, Jefri (trainee), Rama (trainee)
+Afternoon: Agus.P
+Night: Rizal 
+
+5 May 2025
+Morning: Pak Saiful, Sheindy, Fatur (casual), fillern (casual), Fathir (trainee), Satria (trainee)
+Middle: Effendi, Jefri (trainee), Rama (trainee)
+Afternoon: Agus.P
+Night: Andika
+
+6 May 2025
+Morning: Pak Saiful, Ais , Fatur (casual), fillern (casual), Fathir (trainee), Satria (trainee)
+Middle: Effendi, Jefri (trainee), Rama (trainee)
+Afternoon: Agus.P
+Night: Andika
+
+7 May 2025
+Morning: Pak Saiful, Ais , Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Rizal 
+Afternoon: Agus.P
+Night: Andika
+
+8 May 2025
+Morning: Pak Saiful, Sheindy, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Rizal 
+Afternoon: Agus.P
+Night: Ais 
+
+9 May 2025
+Morning: Pak Saiful, Sheindy, Effendi, Fatur (casual), fillern (casual), Fathir (trainee), Satria (trainee)
+Afternoon: Rizal 
+Night: Ais 
+
+10 May 2025
+Morning: Sheindy, Effendi, Fathir (trainee), Satria (trainee)
+Middle: Andika
+Afternoon: Rizal 
+Night: Ais 
+
+11 May 2025
+Morning: Sheindy, Effendi, Jefri (trainee), Rama (trainee)
+Middle: Agus.P, Fathir (trainee), Satria (trainee)
+Afternoon: Rizal 
+Night: Andika
+
+12 May 2025
+Morning: Pak Saiful, Sheindy, Effendi, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Fathir (trainee), Satria (trainee)
+Afternoon: Agus.P
+Night: Andika
+
+13 May 2025
+Morning: Pak Saiful, Ais , Effendi, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Fathir (trainee), Satria (trainee)
+Afternoon: Agus.P
+Night: Andika
+
+14 May 2025
+Morning: Pak Saiful, Ais , Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Rizal 
+Afternoon: Agus.P
+Night: Andika
+
+15 May 2025
+Morning: Pak Saiful, Sheindy, Fatur (casual), fillern (casual), Jefri (trainee), Rama (trainee)
+Middle: Ais 
+Afternoon: Agus.P
+Night: Rizal 
+
+16 May 2025
+Morning: Pak Saiful, Michael , Sheindy, Effendi, Fatur (casual), fillern (casual), Fathir (trainee), Satria (trainee)
+Afternoon: Ais 
+Night: Rizal 
+
+17 May 2025
+Morning: Michael , Sheindy, Effendi, Fathir (trainee), Satria (trainee)
+Middle: Rama (trainee)
+Afternoon: Ais , Andika
+Night: Rizal 
+
+18 May 2025
+Morning: Michael , Sheindy, Effendi, Fathir (trainee), Satria (trainee)
+Middle: Agus.P, Jefri (trainee), Rama (trainee)
+Afternoon: Andika
+Night: Rizal 
+
+19 May 2025
+Morning: Pak Saiful, Michael , Sheindy, Effendi, Fathir (trainee), Satria (trainee)
+Middle: Jefri (trainee)
+Afternoon: Andika
+Night: Agus.P
+
+20 May 2025
+Morning: Pak Saiful, Michael , Ais , Effendi, Fathir (trainee), Satria (trainee)
+Middle: Jefri (trainee), Rama (trainee)
+Afternoon: Andika
+Night: Agus.P
+
+21 May 2025
+Morning: Pak Saiful, Ais , Jefri (trainee), Rama (trainee)
+Middle: Rizal 
+Afternoon: Andika
+Night: Agus.P
+
