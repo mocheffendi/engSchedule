@@ -1,9 +1,4 @@
-app.get('/preview', async (req, res) => {
-  try {
-    const data = await fs.readFile(JADWAL_FILE, 'utf-8');
-    const blocks = data.split(/\n(?=\d{1,2} [A-Za-z]+ \d{4})/g);
-    let html = `
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -26,7 +21,7 @@ app.get('/preview', async (req, res) => {
       }
 
       body {
-        font-family: 'Roboto', sans-serif;
+        font-family: "Roboto", sans-serif;
         background-color: #1c1f24;
         color: #fff;
         display: flex;
@@ -216,8 +211,8 @@ app.get('/preview', async (req, res) => {
           transition: width 0.3s ease;
         }
         /* .sidebar.auto-collapsed {
-          width: 60px;
-        } */
+            width: 60px;
+          } */
         .sidebar .user h4,
         .sidebar nav a span {
           transition: opacity 0.3s;
@@ -249,17 +244,25 @@ app.get('/preview', async (req, res) => {
           display: none;
         }
       }
-              .card-title {
-                  font-size: 20px;
-                  color: #007bff;
-              }
-              .shift-label {
-                  font-weight: bold;
-              }
-              .morning { color: green; }
-              .middle { color: orange; }
-              .afternoon { color: #ffc107; }
-              .night { color: #007bff; }
+      .card-title {
+        font-size: 20px;
+        color: #007bff;
+      }
+      .shift-label {
+        font-weight: bold;
+      }
+      .morning {
+        color: green;
+      }
+      .middle {
+        color: orange;
+      }
+      .afternoon {
+        color: #ffc107;
+      }
+      .night {
+        color: #007bff;
+      }
     </style>
   </head>
   <body>
@@ -339,10 +342,3 @@ app.get('/preview', async (req, res) => {
     </script>
   </body>
 </html>
-    `;
-    res.send(html);
-
-  } catch (err) {
-    res.status(500).send('Gagal membaca jadwal.');
-  }
-});
