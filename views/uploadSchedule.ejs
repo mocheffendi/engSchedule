@@ -8,11 +8,12 @@
       href="https:fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="/css/style.css" />
     <script
       src="https:cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
       defer
     ></script>
-    <style>
+    <!-- <style>
       * {
         margin: 0;
         padding: 0;
@@ -341,7 +342,7 @@
           margin-bottom: 10px;
         }
       }
-    </style>
+    </style> -->
   </head>
   <body>
     <div class="sidebar collapsed" id="sidebar">
@@ -382,20 +383,24 @@
     </div>
 
     <div class="main">
-      <div class="card">
-        <div class="container">
+      <div class="col">
+        <div class="card">
+          <!-- <div class="container"> -->
           <form method="POST" action="/submit">
-            <h3>Input Jadwal</h3>
-            <div class="form-group">
-              <textarea
-                title="jadwal"
-                name="bulk"
-                rows="10"
-                placeholder="Isi jadwal"
-              ></textarea>
-              <input class="btn" type="submit" value="Simpan Jadwal" />
+            <div class="date-header">Input Jadwal</div>
+            <div class="inner-box">
+              <div class="form-group">
+                <textarea
+                  title="jadwal"
+                  name="bulk"
+                  rows="10"
+                  placeholder="Isi jadwal"
+                ></textarea>
+                <input class="btn" type="submit" value="Simpan Jadwal" />
+              </div>
             </div>
           </form>
+          <!-- </div> -->
         </div>
       </div>
     </div>

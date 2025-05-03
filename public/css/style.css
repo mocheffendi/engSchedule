@@ -99,6 +99,7 @@ body {
   position: relative;
   overflow: hidden;
   min-height: 120px;
+  max-width: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -197,6 +198,115 @@ body {
 }
 #scheduleContent .label.night {
   color: #66b2ff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+button {
+  background-color: #c4ff00;
+  color: #1c1f24;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: #1c1f24;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  background-color: #1c1f24;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* h3 {
+  color: #c4ff00;
+  margin-bottom: 10px;
+} */
+
+/* form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+} */
+
+button {
+  background-color: #c4ff00;
+  color: #1c1f24;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* .container {
+  max-width: 600px;
+  margin: auto;
+  background: #1c1f24;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+} */
+
+/* textarea,
+input[type="text"],
+input[type="submit"],
+button,
+input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+} */
+
+textarea {
+  background-color: #1c1f24;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: none;
+  width: 300px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+button {
+  background-color: #c4ff00;
+  color: #1c1f24;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn {
+  background: #c4ff00;
+  font-weight: bold;
+  color: black;
+  border: none;
+  border-radius: 5px;
 }
 
 @media (max-width: 768px) {

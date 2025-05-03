@@ -8,11 +8,12 @@
       href="https:fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="/css/style.css" />
     <script
       src="https:cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
       defer
     ></script>
-    <style>
+    <!-- <style>
       * {
         margin: 0;
         padding: 0;
@@ -343,7 +344,7 @@
           margin-bottom: 10px;
         }
       }
-    </style>
+    </style> -->
   </head>
   <body>
     <div class="sidebar collapsed" id="sidebar">
@@ -384,25 +385,27 @@
     </div>
 
     <div class="main">
-      <div class="container">
+      <div class="col">
         <div class="card">
-          <h3>📁 Upload Jadwal Excel</h3>
-          <form action="/upload" method="post" enctype="multipart/form-data">
-            <input
-              aria-label="Upload file excel"
-              type="file"
-              name="excel"
-              accept=".xlsx,.xls"
-              required
-            />
-            <button
-              type="submit"
-              onmouseover="this.style.backgroundColor='#b2e000'"
-              onmouseout="this.style.backgroundColor='#c4ff00'"
-            >
-              ⬆️ Upload dan Extract
-            </button>
-          </form>
+          <div class="date-header">📁 Upload Jadwal Excel</div>
+          <div class="inner-box">
+            <form action="/upload" method="post" enctype="multipart/form-data">
+              <input
+                aria-label="Upload file excel"
+                type="file"
+                name="excel"
+                accept=".xlsx,.xls"
+                required
+              />
+              <button
+                type="submit"
+                onmouseover="this.style.backgroundColor='#b2e000'"
+                onmouseout="this.style.backgroundColor='#c4ff00'"
+              >
+                ⬆️ Upload dan Extract
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

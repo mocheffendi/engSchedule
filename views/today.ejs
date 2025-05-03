@@ -62,11 +62,12 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="/css/style.css" />
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
       defer
     ></script>
-    <style>
+    <!-- <style>
       * {
         margin: 0;
         padding: 0;
@@ -340,7 +341,7 @@
           font-size: 18px;
         }
       }
-    </style>
+    </style> -->
   </head>
   <body>
     <div class="sidebar collapsed" id="sidebar">
@@ -375,17 +376,13 @@
     </div>
 
     <div class="main">
-      <div class="card">
-        <!-- <div class="container"> -->
-        <!-- <div class="schedule-card"> -->
-        <!-- <div class="card shadow-sm h-100"> -->
-        <!-- <div class="card-body"> -->
-        <h3><%= today %></h3>
-        <div id="scheduleContent"><%- formatted %></div>
-        <!-- </div> -->
-        <!-- </div> -->
-        <!-- </div> -->
-        <!-- </div> -->
+      <div class="col">
+        <div class="card">
+          <div class="date-header"><%= today %></div>
+          <div class="inner-box">
+            <div id="scheduleContent"><%- formatted %></div>
+          </div>
+        </div>
       </div>
     </div>
 
