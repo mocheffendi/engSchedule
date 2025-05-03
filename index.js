@@ -26,6 +26,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
+// Set static folder for CSS, images, JS
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', (req, res) => {
   // res.send(``);
   res.render('index', {});
