@@ -92,6 +92,31 @@ body {
   transition: margin-left 0.3s;
 }
 
+#colScheduleContent div {
+  max-width: 300px;
+  max-height: 300px;
+  /* margin-bottom: 10px; */
+  /* color: #fff; */
+}
+
+.cardScheduleContent {
+  background-color: #2a2f36;
+  border-radius: 16px;
+  padding: 8px;
+  position: relative;
+  overflow: hidden;
+  min-height: 120px;
+  max-width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(196, 255, 0, 0.3);
+}
+
 .card {
   background-color: #2a2f36;
   border-radius: 16px;
@@ -309,6 +334,80 @@ button {
   border-radius: 5px;
 }
 
+.calendar-box {
+  background-color: #2a2f36;
+  border-radius: 12px;
+  padding: 20px;
+  width: 420px;
+  height: 370px;
+}
+.calendar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.calendar-controls button {
+  background-color: #c4ff00;
+  color: #1c1f24;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.schedule-card {
+  background-color: #2a2f36;
+  border-radius: 12px;
+  padding: 20px;
+  flex: 1;
+}
+.schedule-card h3 {
+  color: #c4ff00;
+  margin-bottom: 10px;
+}
+#scheduleContent div {
+  margin-bottom: 10px;
+  color: #fff;
+}
+#scheduleContent .label {
+  font-weight: bold;
+  margin-right: 6px;
+}
+#scheduleContent .label.morning {
+  color: #90ee90;
+}
+#scheduleContent .label.middle {
+  color: Orange;
+}
+#scheduleContent .label.afternoon {
+  color: #ffd700;
+}
+#scheduleContent .label.night {
+  color: #66b2ff;
+}
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center;
+}
+.calendar .day {
+  padding: 10px;
+  background: #3a3f47;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 18px;
+}
+.calendar .day:hover {
+  background-color: #c4ff00;
+  color: #1c1f24;
+}
+.calendar .selected {
+  background-color: #c4ff00;
+  color: #1c1f24;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     width: 240px;
@@ -352,6 +451,30 @@ button {
 
   .sidebar.collapsed nav a span {
     display: none;
+  }
+
+  .calendar-box {
+    width: 100%;
+    background-color: #2a2f36;
+    border-radius: 12px;
+    padding: 20px;
+    /* width: 420px; */
+    height: 210px;
+  }
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+  }
+  .calendar .day {
+    padding: 3px;
+    font-size: 18px;
+  }
+  .schedule-card {
+    width: 100%;
+    /* height: 300px; */
+    margin-bottom: 10px;
   }
 }
 .card-title {

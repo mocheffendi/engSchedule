@@ -10,6 +10,9 @@ const cron = require('node-cron');
 const multer = require('multer');
 const xlsx = require('xlsx');
 
+const puppeteer = require('puppeteer-core');
+const FormData = require('form-data');
+
 const upload = multer({ dest: 'uploads/' });
 
 const app = express();
@@ -1230,39 +1233,89 @@ app.post('/sendMessage', async (req, res) => {
   }
 });
 
-cron.schedule('0 7 * * *', async () => {
-  console.log('⏰ Mengirim pesan otomatis...');
-  const today = moment().format('D MMMM YYYY');
+const CHROMIUM_PATH = '/usr/bin/chromium-browser';
+const TARGET_URL = 'http://wasistech.duckdns.org:5001/today';
+const NUMBER = '6283856088009';
+const CAPTION = 'Jadwal hari ini';
+
+// Fungsi utama untuk ambil screenshot dan kirim
+async function captureAndSend() {
+  const browser = await puppeteer.launch({
+    executablePath: CHROMIUM_PATH,
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  const page = await browser.newPage();
+  await page.goto(TARGET_URL, { waitUntil: 'networkidle0' });
+  await page.waitForSelector('#isiJadwal');
+
+  const element = await page.$('#isiJadwal');
+  const screenshotPath = path.join(__dirname, 'scheduleContent.png');
+  await element.screenshot({ path: screenshotPath });
+
+  await browser.close();
+
+  const form = new FormData();
+  form.append('image', fs.createReadStream(screenshotPath));
+  form.append('number', NUMBER);
+  form.append('caption', CAPTION);
+
   try {
-    const data = await fs.readFile(JADWAL_FILE, 'utf-8');
-    const lines = data.split(/\r?\n/);
-    let collect = false;
-    let result = '';
-
-    for (let line of lines) {
-      if (line.trim() === today) {
-        collect = true;
-        result += line + '\n';
-        continue;
-      }
-      if (collect) {
-        if (line.trim() === '') break;
-        result += line + '\n';
-      }
-    }
-
-    if (result) {
-      await axios.post(WA_API, {
-        number: DEFAULT_NUMBER,
-        message: result.trim()
-      });
-      console.log('✅ Pesan jadwal hari ini berhasil dikirim.');
-    } else {
-      console.log('⚠️ Tidak ada jadwal hari ini.');
-    }
-  } catch (err) {
-    console.error('❌ Gagal kirim pesan otomatis:', err.message);
+    const response = await axios.post(
+      'http://wasistech.duckdns.org:3001/send-image',
+      form,
+      { headers: form.getHeaders() }
+    );
+    console.log('Berhasil mengirim:', response.data);
+  } catch (error) {
+    console.error('Gagal mengirim:', error.response?.data || error.message);
   }
+}
+
+// Menjadwalkan setiap hari pukul 07:00 pagi
+cron.schedule('0 7 * * *', () => {
+  console.log('Menjalankan pengiriman pukul 07:00');
+  captureAndSend();
+});
+
+// cron.schedule('0 7 * * *', async () => {
+//   console.log('⏰ Mengirim pesan otomatis...');
+//   const today = moment().format('D MMMM YYYY');
+//   try {
+//     const data = await fs.readFile(JADWAL_FILE, 'utf-8');
+//     const lines = data.split(/\r?\n/);
+//     let collect = false;
+//     let result = '';
+
+//     for (let line of lines) {
+//       if (line.trim() === today) {
+//         collect = true;
+//         result += line + '\n';
+//         continue;
+//       }
+//       if (collect) {
+//         if (line.trim() === '') break;
+//         result += line + '\n';
+//       }
+//     }
+
+//     if (result) {
+//       await axios.post(WA_API, {
+//         number: DEFAULT_NUMBER,
+//         message: result.trim()
+//       });
+//       console.log('✅ Pesan jadwal hari ini berhasil dikirim.');
+//     } else {
+//       console.log('⚠️ Tidak ada jadwal hari ini.');
+//     }
+//   } catch (err) {
+//     console.error('❌ Gagal kirim pesan otomatis:', err.message);
+//   }
+// });
+
+app.get('/testSendImage', (req, res) => {
+  captureAndSend(res);
 });
 
 app.listen(PORT, () => {

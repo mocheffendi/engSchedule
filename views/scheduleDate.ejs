@@ -8,11 +8,12 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="/css/style.css" />
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
       defer
     ></script>
-    <style>
+    <!-- <style>
       * {
         margin: 0;
         padding: 0;
@@ -247,7 +248,7 @@
           margin-bottom: 10px;
         }
       }
-    </style>
+    </style> -->
   </head>
   <body>
     <div class="sidebar collapsed" id="sidebar">
@@ -283,10 +284,16 @@
 
     <div class="main">
       <div class="col">
-        <div class="schedule-card">
-          <h3>Jadwal Tanggal <span id="selectedDateDisplay">-</span></h3>
-          <div id="scheduleContent">
-            Klik tanggal di kalender untuk melihat jadwal.
+        <div class="card">
+          <!-- <div class="schedule-card"> -->
+          <div class="date-header">
+            Jadwal Tanggal <span id="selectedDateDisplay">-</span>
+          </div>
+          <div class="inner-box">
+            <div id="scheduleContent">
+              Klik tanggal di kalender untuk melihat jadwal.
+              <!-- </div> -->
+            </div>
           </div>
         </div>
       </div>
