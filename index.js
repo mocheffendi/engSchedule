@@ -1235,43 +1235,96 @@ app.post('/sendMessage', async (req, res) => {
 
 const CHROMIUM_PATH = '/usr/bin/chromium-browser';
 const TARGET_URL = 'http://wasistech.duckdns.org:5001/today';
-const NUMBER = '6283856088009';
-const CAPTION = 'Jadwal hari ini';
+// const NUMBER = '6283856088009';
+// const CAPTION = 'Jadwal Hari ini';
 
-// Fungsi utama untuk ambil screenshot dan kirim
-async function captureAndSend() {
-  const browser = await puppeteer.launch({
-    executablePath: CHROMIUM_PATH,
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
-
-  const page = await browser.newPage();
-  await page.goto(TARGET_URL, { waitUntil: 'networkidle0' });
-  await page.waitForSelector('#isiJadwal');
-
-  const element = await page.$('#isiJadwal');
+async function captureAndSend(res) {
   const screenshotPath = path.join(__dirname, 'scheduleContent.png');
-  await element.screenshot({ path: screenshotPath });
-
-  await browser.close();
-
-  const form = new FormData();
-  form.append('image', fs.createReadStream(screenshotPath));
-  form.append('number', NUMBER);
-  form.append('caption', CAPTION);
+  const settings = loadSettings();
+  const NUMBER = settings.NUMBER;
+  const CAPTION = settings.CAPTION;
 
   try {
+    const browser = await puppeteer.launch({
+      executablePath: CHROMIUM_PATH,
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+
+    const page = await browser.newPage();
+    await page.goto(TARGET_URL, { waitUntil: 'networkidle0' });
+    await page.waitForSelector('#isiJadwal');
+
+    const element = await page.$('#isiJadwal');
+    await element.screenshot({ path: screenshotPath });
+
+    await browser.close();
+
+    const form = new FormData();
+    form.append('image', fs.createReadStream(screenshotPath));
+    form.append('number', NUMBER);
+    form.append('caption', CAPTION);
+
     const response = await axios.post(
       'http://wasistech.duckdns.org:3001/send-image',
       form,
       { headers: form.getHeaders() }
     );
-    console.log('Berhasil mengirim:', response.data);
+
+    fs.unlinkSync(screenshotPath); // Hapus file setelah dikirim
+
+    res.json({
+      success: true,
+      to: NUMBER,
+      message: '📸 Gambar berhasil dikirim',
+      data: response.data
+    });
+
   } catch (error) {
-    console.error('Gagal mengirim:', error.response?.data || error.message);
+    console.error("❌ Gagal kirim gambar:", error);
+    if (fs.existsSync(screenshotPath)) fs.unlinkSync(screenshotPath); // Pastikan file dihapus kalau gagal
+    res.status(500).json({
+      success: false,
+      message: '❌ Gagal kirim gambar',
+      error: error.response?.data || error.message
+    });
   }
 }
+
+// Fungsi utama untuk ambil screenshot dan kirim
+// async function captureAndSend() {
+//   const browser = await puppeteer.launch({
+//     executablePath: CHROMIUM_PATH,
+//     headless: true,
+//     args: ['--no-sandbox', '--disable-setuid-sandbox']
+//   });
+
+//   const page = await browser.newPage();
+//   await page.goto(TARGET_URL, { waitUntil: 'networkidle0' });
+//   await page.waitForSelector('#isiJadwal');
+
+//   const element = await page.$('#isiJadwal');
+//   const screenshotPath = path.join(__dirname, 'scheduleContent.png');
+//   await element.screenshot({ path: screenshotPath });
+
+//   await browser.close();
+
+//   const form = new FormData();
+//   form.append('image', fs.createReadStream(screenshotPath));
+//   form.append('number', NUMBER);
+//   form.append('caption', CAPTION);
+
+//   try {
+//     const response = await axios.post(
+//       'http://wasistech.duckdns.org:3001/send-image',
+//       form,
+//       { headers: form.getHeaders() }
+//     );
+//     console.log('Berhasil mengirim:', response.data);
+//   } catch (error) {
+//     console.error('Gagal mengirim:', error.response?.data || error.message);
+//   }
+// }
 
 // Menjadwalkan setiap hari pukul 07:00 pagi
 cron.schedule('0 7 * * *', () => {
@@ -1316,6 +1369,58 @@ cron.schedule('0 7 * * *', () => {
 
 app.get('/testSendImage', (req, res) => {
   captureAndSend(res);
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+const SETTINGS_FILE = path.join(__dirname, 'settings.json');
+
+
+
+// Load settings
+function loadSettings() {
+  try {
+    const data = fs.readFileSync(SETTINGS_FILE);
+    return JSON.parse(data);
+  } catch (err) {
+    return { NUMBER: '', CAPTION: '' };
+  }
+}
+
+// Save settings
+function saveSettings(settings) {
+  fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+}
+
+// GET form
+app.get('/settings', (req, res) => {
+  const settings = loadSettings();
+  const saved = req.query.saved === 'true';
+  res.render('setting', { settings, saved });
+  // res.render('setting', { settings });
+  // res.send(`
+  //   <h2>Settings</h2>
+  //   <form action="/settings" method="POST">
+  //     <label for="number">NUMBER:</label>
+  //     <input type="text" name="number" value="${settings.NUMBER}" /><br />
+
+  //     <label for="caption">CAPTION:</label>
+  //     <input type="text" name="caption" value="${settings.CAPTION}" /><br />
+
+  //     <button type="submit">Save</button>
+  //   </form>
+  // `);
+});
+
+// POST form
+app.post('/settings', (req, res) => {
+  const { number, caption } = req.body;
+  const settings = { NUMBER: number, CAPTION: caption };
+  saveSettings(settings);
+  // res.redirect('/settings');
+  res.redirect('/settings?saved=true');
 });
 
 app.listen(PORT, () => {
